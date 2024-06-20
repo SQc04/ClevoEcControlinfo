@@ -12,13 +12,15 @@ namespace ClevoEcControlinfo
             public byte FanDuty; // 风扇负载，0-255
             public byte Reserve;
         }
-        public bool IsServerStarted()
+        public static bool IsServerStarted()
         {
             using (var client = new NamedPipeClientStream("ClevoEcPipe"))
             {
                 try
                 {
                     client.Connect(0);  // 尝试立即连接，不等待
+                    byte[] fanIdBytes = System.Text.Encoding.Default.GetBytes("ClevoEcPipeTestConnect");
+                    client.Write(fanIdBytes, 0, fanIdBytes.Length);
                     return true;  // 如果连接成功，返回 true
                 }
                 catch (TimeoutException)

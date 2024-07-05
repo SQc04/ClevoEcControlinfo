@@ -239,5 +239,47 @@ namespace ClevoEcControlinfo
                 client.Write(fanIdBytes, 0, fanIdBytes.Length);
             }
         }
+        public static bool IsWatchDogStarted()
+        {
+            using (var client = new NamedPipeClientStream("ClevoEcPipe"))
+            {
+                client.Connect();
+                byte[] idBytes = System.Text.Encoding.Default.GetBytes("WatchDogInitTo");
+                client.Write(idBytes, 0, idBytes.Length);
+
+                
+            }
+            using (var client = new NamedPipeClientStream("WatchDogInitTo"))
+            {
+                client.Connect();
+                // 创建一个缓冲区来存储从服务器接收到的数据
+                byte[] buffer = new byte[4]; // 布尔值在 .NET 中占用 4 字节
+                client.Read(buffer, 0, buffer.Length);
+
+                // 将接收到的字节转换回布尔值
+                bool watchDoginfo = BitConverter.ToBoolean(buffer, 0);
+                return watchDoginfo;
+            }
+        }
+        public static void SetWatchDogStarted()
+        {
+            using (var client = new NamedPipeClientStream("ClevoEcPipe"))
+            {
+                client.Connect();
+                byte[] idBytes = System.Text.Encoding.Default.GetBytes("WatchDogStart");
+                client.Write(idBytes, 0, idBytes.Length);
+            }
+        }
+
+        public static void SetWatchDogClosed()
+        {
+            using (var client = new NamedPipeClientStream("ClevoEcPipe"))
+            {
+                client.Connect();
+                byte[] idBytes = System.Text.Encoding.Default.GetBytes("WatchDogClose");
+                client.Write(idBytes, 0, idBytes.Length);
+            }
+        }
+
     }
 }

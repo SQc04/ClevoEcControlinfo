@@ -3,15 +3,37 @@ using System.Text;
 
 namespace ClevoEcControlinfo
 {
+    /// <summary>
+    /// Clevo风扇控制服务的API。
+    /// </summary>
     public class ClevoEcControl
     {
+        /// <summary>
+        /// ECData结构包含了风扇温度(℃)，风扇控制百分比(0~255)和预留字段。
+        /// </summary>
         public struct ECData
         {
+            /// <summary>
+            /// 风扇温度(℃)。
+            /// </summary>
             public byte Remote; // 温度
+            /// <summary>
+            /// 
+            /// </summary>
             public byte Local;
+            /// <summary>
+            /// 风扇控制百分比(占空比数据为0~255)。
+            /// </summary>
             public byte FanDuty; // 风扇负载，0-255
+            /// <summary>
+            /// 保留字段。
+            /// </summary>
             public byte Reserve;
         }
+
+        /// <summary>
+        /// IsServerStarted测试服务进程是否正常启动
+        /// </summary>
         public static bool IsServerStarted()
         {
             using (var client = new NamedPipeClientStream("ClevoEcPipe"))
@@ -30,6 +52,9 @@ namespace ClevoEcControlinfo
             }
         }
 
+        /// <summary>
+        /// 蓝天风扇控制程序IO初始化
+        /// </summary>
         public static bool InitIo()
         {
             using (var client = new NamedPipeClientStream("ClevoEcPipe"))
@@ -49,6 +74,10 @@ namespace ClevoEcControlinfo
                 return isInitialized;
             }
         }
+
+        /// <summary>
+        /// 获取EC固件版本
+        /// </summary>
         public static string GetECVersion()
         {
             using (var client = new NamedPipeClientStream("ClevoEcPipe"))
@@ -68,6 +97,10 @@ namespace ClevoEcControlinfo
                 return version;
             }
         }
+
+        /// <summary>
+        /// 获取风扇数量
+        /// </summary>
         public static int GetFanCount()
         {
             using (var client = new NamedPipeClientStream("ClevoEcPipe"))
@@ -87,6 +120,10 @@ namespace ClevoEcControlinfo
                 return fanNum;
             }
         }
+
+        /// <summary>
+        /// 获取Cpu风扇转速，转速通过[ 2100000 / GetCpuFanRpm() ]计算
+        /// </summary>
         public static int GetCpuFanRpm()
         {
             using (var client = new NamedPipeClientStream("ClevoEcPipe"))
@@ -106,6 +143,10 @@ namespace ClevoEcControlinfo
                 return cpuFanRpm;
             }
         }
+
+        /// <summary>
+        /// 获取Gpu风扇转速，转速通过[ 2100000 / GetGpuFanRpm() ]计算
+        /// </summary>
         public static int GetGpuFanRpm()
         {
             using (var client = new NamedPipeClientStream("ClevoEcPipe"))
@@ -125,6 +166,10 @@ namespace ClevoEcControlinfo
                 return gpuFanRpm;
             }
         }
+
+        /// <summary>
+        /// 获取Gpu1风扇转速，转速通过[ 2100000 / GetGpu1FanRpm() ]计算
+        /// </summary>
         public static int GetGpu1FanRpm()
         {
             using (var client = new NamedPipeClientStream("ClevoEcPipe"))
@@ -144,6 +189,10 @@ namespace ClevoEcControlinfo
                 return gpu1FanRpm;
             }
         }
+
+        /// <summary>
+        /// 获取X72风扇转速，转速通过[ 2100000 / GetX72FanRpm() ]计算
+        /// </summary>
         public static int GetX72FanRpm()
         {
             using (var client = new NamedPipeClientStream("ClevoEcPipe"))
@@ -164,6 +213,9 @@ namespace ClevoEcControlinfo
             }
         }
 
+        /// <summary>
+        /// 输入风扇ID获取温度和风扇的占空比
+        /// </summary>
         public static ECData GetTempFanDuty(int fan_id)
         {
             using (var client = new NamedPipeClientStream("ClevoEcPipe"))
@@ -201,6 +253,10 @@ namespace ClevoEcControlinfo
             }
 
         }
+
+        /// <summary>
+        /// 设置风扇控制占空比，输入风扇id和控制的数值(占空比数据为0~255)
+        /// </summary>
         public static void SetFanDuty(int fan_id, int duty)
         {
             using (var client = new NamedPipeClientStream("ClevoEcPipe"))
@@ -222,6 +278,10 @@ namespace ClevoEcControlinfo
                 client.Write(dutyBytes, 0, fanIdBytes.Length);
             }
         }
+
+        /// <summary>
+        /// 设置风扇控制为自动(通过EC自行管理)
+        /// </summary>
         public static void SetFanDutyAuto(int fan_id)
         {
             using (var client = new NamedPipeClientStream("ClevoEcPipe"))
@@ -239,6 +299,10 @@ namespace ClevoEcControlinfo
                 client.Write(fanIdBytes, 0, fanIdBytes.Length);
             }
         }
+
+        /// <summary>
+        /// 查询看门狗程序是否运行
+        /// </summary>
         public static bool IsWatchDogStarted()
         {
             using (var client = new NamedPipeClientStream("ClevoEcPipe"))
@@ -261,6 +325,10 @@ namespace ClevoEcControlinfo
                 return watchDoginfo;
             }
         }
+
+        /// <summary>
+        /// 启动看门狗程序
+        /// </summary>
         public static void SetWatchDogStarted()
         {
             using (var client = new NamedPipeClientStream("ClevoEcPipe"))
@@ -271,6 +339,9 @@ namespace ClevoEcControlinfo
             }
         }
 
+        /// <summary>
+        /// 关闭看门狗程序
+        /// </summary>
         public static void SetWatchDogClosed()
         {
             using (var client = new NamedPipeClientStream("ClevoEcPipe"))
